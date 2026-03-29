@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOCAL_CART - See it. Talk it. Buy it.</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Add Jitsi Meet API for video chat -->
+  <script src='https://meet.jit.si/external_api.js'></script>
+  <style>
+    /* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #5D3FD3;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(93, 63, 211, 0.2);
+}
+
+.btn:hover {
+  background-color: #4A32A8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(93, 63, 211, 0.3);
+}
+
+.btn-secondary {
+  background-color: #FF6B6B;
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2);
+}
+
+.btn-secondary:hover {
+  background-color: #FF5252;
+  box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 36px;
+  color: #333;
+  position: relative;
+  padding-bottom: 15px;
+  font-weight: 700;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: #5D3FD3;
+}
+
+/* Header Styles */
+header {
+  background-color: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.logo h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #5D3FD3;
+  letter-spacing: 1px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+nav ul {
+  display: flex;
+}
+
+nav ul li {
+  margin-left: 25px;
+}
+
+nav ul li a {
+  font-weight: 600;
+  padding: 10px 5px;
+  position: relative;
+  color: #444;
+  transition: color 0.3s ease;
+}
+
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: #5D3FD3;
+  transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #5D3FD3;
+}
+
+nav ul li a:hover::after,
+nav ul li a.active::after {
+  width: 100%;
+}
+
+.cart-icon a {
+  position: relative;
+  font-size: 22px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.cart-icon a:hover {
+  color: #5D3FD3;
+}
+
+#cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #5D3FD3;
+  color: white;
+  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-content h2 {
+  font-size: 56px;
+  margin-bottom: 20px;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero-content p {
+  font-size: 22px;
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+.hero-content .tagline {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: #FFD700;
+}
+
+/* Products Section */
+.products {
+  padding: 100px 0;
+  background-color: #f9f9f9;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background-color: transparent;
+  border: 2px solid #5D3FD3;
+  color: #5D3FD3;
+  padding: 10px 20px;
+  margin: 0 10px 10px 0;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background-color: #5D3FD3;
+  color: white;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.product-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+  height: 250px;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.product-image img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.product-info {
+  padding: 25px;
+}
+
+.product-category {
+  font-size: 14px;
+  color: #5D3FD3;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.product-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.product-price {
+  font-size: 24px;
+  font-weight: 800;
+  color: #5D3FD3;
+  margin-bottom: 15px;
+}
+
+.product-description {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 25px;
+  height: 60px;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 30px;
+  padding: 5px;
+}
+
+.quantity-btn {
+  background-color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.quantity-btn:hover {
+  background-color: #5D3FD3;
+  color: white;
+}
+
+.quantity-input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  font-size: 16px;
+  margin: 0 10px;
+  background-color: transparent;
+  font-weight: 600;
+}
+
+/* About Section */
+.about {
+  padding: 100px 0;
+  background-color: white;
+}
+
+.about-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+.about-text p {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #555;
+  line-height: 1.8;
+}
+
+.about-features {
+  flex: 1;
+  min-width: 300px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+}
+
+.feature {
+  text-align: center;
+  padding: 30px 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-10px);
+}
+
+.feature i {
+  font-size: 40px;
+  color: #5D3FD3;
+  margin-bottom: 20px;
+}
+
+.feature h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.feature p {
+  color: #666;
+}
+
+/* Contact Section */
+.contact {
+  padding: 100px 0;
+  background-color: #f9f9f9;
+}
+
+.contact-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.contact-info h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.contact-details {
+  margin-bottom: 30px;
+}
+
+.contact-details p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  color: #555;
+  font-size: 16px;
+}
+
+.contact-details p i {
+  width: 30px;
+  color: #5D3FD3;
+  font-size: 18px;
+}
+
+.social-links a {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background-color: #5D3FD3;
+  color: white;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background-color: #4A32A8;
+  transform: translateY(-3px);
+}
+
+.contact-form {
+  flex: 1;
+  min-width: 300px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #5D3FD3;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 150px;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: white;
+  margin: 50px auto;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  padding: 20px 25px;
+  background-color: #5D3FD3;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.close {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #FFD700;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+/* Cart Modal */
+.cart-items {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+}
+
+.cart-item {
+  display: flex;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.cart-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.cart-item-price {
+  color: #5D3FD3;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.cart-quantity {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.cart-quantity-btn {
+  background-color: #f1f1f1;
+  border: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.cart-quantity-btn:hover {
+  background-color: #5D3FD3;
+  color: white;
+}
+
+.cart-quantity-input {
+  width: 30px;
+  text-align: center;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  font-weight: 600;
+}
+
+.remove-item {
+  color: #FF6B6B;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.remove-item:hover {
+  color: #FF5252;
+  text-decoration: underline;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  border-top: 2px solid #eee;
+}
+
+.cart-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Checkout Modal */
+.checkout-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.order-summary {
+  margin-top: 30px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.order-summary h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+/* Confirmation Modal */
+.confirmation-message {
+  text-align: center;
+  padding: 30px 0;
+}
+
+.confirmation-message i {
+  font-size: 80px;
+  color: #4CAF50;
+  margin-bottom: 20px;
+}
+
+.confirmation-message h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.confirmation-message p {
+  color: #555;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+#continue-shopping {
+  display: block;
+  margin: 30px auto 0;
+}
+
+/* Footer */
+footer {
+  background-color: #222;
+  color: white;
+  padding: 80px 0 20px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.footer-logo h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #5D3FD3;
+}
+
+.footer-logo p {
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+.footer-links h3,
+.footer-newsletter h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: white;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-links h3::after,
+.footer-newsletter h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: #5D3FD3;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+  color: #5D3FD3;
+}
+
+.footer-newsletter form {
+  display: flex;
+}
+
+.footer-newsletter input {
+  flex: 1;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+.footer-newsletter button {
+  padding: 12px 15px;
+  background-color: #5D3FD3;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.footer-newsletter button:hover {
+  background-color: #4A32A8;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+  font-size: 14px;
+}
+
+.footer-bottom p {
+  color: #aaa;
+}
+
+.social-links {
+  display: flex;
+}
+
+.social-links a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background-color: #333;
+  color: white;
+  border-radius: 50%;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background-color: #5D3FD3;
+  transform: translateY(-3px);
+}
+
+/* Notification */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #5D3FD3;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Video Chat Styles */
+.video-chat-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 350px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.video-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #5D3FD3;
+  color: white;
+}
+
+.video-chat-content {
+  height: calc(100% - 50px);
+  width: 100%;
+}
+
+.video-chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #5D3FD3;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.video-chat-toggle:hover {
+  transform: scale(1.1);
+  background-color: #4A32A8;
+}
+
+/* Local Store Styles */
+.store-locator {
+  padding: 80px 0;
+  background-color: #f0f2f5;
+}
+
+.store-search {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.store-search input {
+  flex: 1;
+  padding: 15px 20px;
+  border: 1px solid #ddd;
+  border-radius: 30px 0 0 30px;
+  font-size: 16px;
+}
+
+.store-search button {
+  padding: 15px 25px;
+  background-color: #5D3FD3;
+  color: white;
+  border: none;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.store-search button:hover {
+  background-color: #4A32A8;
+}
+
+.stores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.store-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.store-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.store-image {
+  height: 180px;
+  overflow: hidden;
+}
+
+.store-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.store-card:hover .store-image img {
+  transform: scale(1.05);
+}
+
+.store-info {
+  padding: 20px;
+}
+
+.store-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.store-address {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.store-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.store-distance {
+  font-size: 14px;
+  color: #5D3FD3;
+  font-weight: 600;
+}
+
+.store-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.store-actions button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: #f1f1f1;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.store-actions button:hover {
+  background-color: #5D3FD3;
+  color: white;
+}
+
+.inventory-status {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.inventory-status.in-stock {
+  color: #28a745;
+}
+
+.inventory-status.low-stock {
+  color: #ffc107;
+}
+
+.inventory-status.out-of-stock {
+  color: #dc3545;
+}
+
+.inventory-status i {
+  margin-right: 5px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .hero-content h2 {
+    font-size: 40px;
+  }
+  
+  .hero-content p {
+    font-size: 18px;
+  }
+  
+  .hero-content .tagline {
+    font-size: 22px;
+  }
+  
+  .section-title {
+    font-size: 28px;
+  }
+  
+  .about-content,
+  .contact-content {
+    flex-direction: column;
+  }
+  
+  .checkout-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-group.full-width {
+    grid-column: span 1;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-bottom .social-links {
+    margin-top: 15px;
+    justify-content: center;
+  }
+  
+  .social-links a {
+    margin: 0 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  header .container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  nav ul {
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+  nav ul li {
+    margin: 0 10px;
+  }
+  
+  .cart-icon {
+    margin-top: 20px;
+  }
+  
+  .hero {
+    height: 500px;
+  }
+  
+  .hero-content h2 {
+    font-size: 32px;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <h1>LOCAL_CART</h1>
+        <div class="tagline">See it. Talk it. Buy it.</div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#stores">Find Stores</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="cart-icon">
+        <a href="#" id="cart-button">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h2>Premium Shopping Experience</h2>
+          <div class="tagline">See it. Talk it. Buy it.</div>
+          <p>Discover quality products with amazing deals</p>
+          <a href="#products" class="btn">Shop Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+      <div class="container">
+        <h2 class="section-title">Our Products</h2>
+        <div class="filters">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="Electronics">Electronics</button>
+          <button class="filter-btn" data-category="Clothing">Clothing</button>
+          <button class="filter-btn" data-category="Home">Home</button>
+          <button class="filter-btn" data-category="Accessories">Accessories</button>
+        </div>
+        <div class="products-grid" id="products-container">
+          <!-- Products will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="container">
+        <h2 class="section-title">About Us</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>LOCAL_CART is your premium destination for all your shopping needs. We curate high-quality products from trusted brands and deliver them right to your doorstep with exceptional service.</p>
+            <p>Our mission is to provide a seamless shopping experience with our "See it. Talk it. Buy it." approach, ensuring you can easily find, discuss, and purchase the products you love.</p>
+          </div>
+          <div class="about-features">
+            <div class="feature">
+              <i class="fas fa-truck"></i>
+              <h3>Fast Delivery</h3>
+              <p>Get your products delivered quickly and securely</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-shield-alt"></i>
+              <h3>Secure Payments</h3>
+              <p>Your transactions are always protected</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-undo"></i>
+              <h3>Easy Returns</h3>
+              <p>Hassle-free 30-day return policy</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Store Locator Section -->
+    <section id="stores" class="store-locator">
+      <div class="container">
+        <h2 class="section-title">Find Local Stores</h2>
+        <div class="store-search">
+          <input type="text" id="store-search-input" placeholder="Enter your location or ZIP code">
+          <button id="store-search-btn"><i class="fas fa-search"></i> Find Stores</button>
+        </div>
+        <div class="stores-grid" id="stores-container">
+          <!-- Stores will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <h3>Get In Touch</h3>
+            <div class="contact-details">
+              <p><i class="fas fa-map-marker-alt"></i> 123 Shopping Street, Retail City</p>
+              <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+              <p><i class="fas fa-envelope"></i> support@local-cart.com</p>
+              <p><i class="fas fa-clock"></i> Mon-Fri: 9:00 AM - 6:00 PM</p>
+            </div>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          <div class="contact-form">
+            <form>
+              <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Your Email</label>
+                <input type="email" id="email" class="form-control" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" class="form-control" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="message">Message</label>
+                <textarea id="message" class="form-control" rows="5" required></textarea>
+              </div>
+              <button type="submit" class="btn">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Shopping Cart</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="cart-items">
+          <!-- Cart items will be loaded here dynamically -->
+        </div>
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+        <div class="cart-buttons">
+          <button id="clear-cart" class="btn btn-secondary">Clear Cart</button>
+          <button id="checkout-btn" class="btn">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Checkout</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form">
+          <div class="checkout-form">
+            <div class="form-group">
+              <label for="checkout-name">Full Name</label>
+              <input type="text" id="checkout-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-email">Email</label>
+              <input type="email" id="checkout-email" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-phone">Phone</label>
+              <input type="tel" id="checkout-phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-address">Address</label>
+              <input type="text" id="checkout-address" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-city">City</label>
+              <input type="text" id="checkout-city" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-zip">ZIP Code</label>
+              <input type="text" id="checkout-zip" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-card">Card Number</label>
+              <input type="text" id="checkout-card" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-expiry">Expiry Date</label>
+              <input type="text" id="checkout-expiry" class="form-control" placeholder="MM/YY" required>
+            </div>
+          </div>
+          <div class="order-summary">
+            <h3>Order Summary</h3>
+            <div id="order-items">
+              <!-- Order items will be loaded here dynamically -->
+            </div>
+            <div class="order-total">
+              <span>Total:</span>
+              <span id="order-total">$0.00</span>
+            </div>
+          </div>
+          <button type="submit" class="btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Order Confirmation</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="confirmation-message">
+          <i class="fas fa-check-circle"></i>
+          <h3>Thank you for your order!</h3>
+          <p>Your order has been placed successfully.</p>
+          <p>Order ID: <span id="order-id"></span></p>
+          <p>A confirmation email has been sent to <span id="order-email"></span>.</p>
+        </div>
+        <button id="continue-shopping" class="btn">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>LOCAL_CART</h2>
+          <p>See it. Talk it. Buy it.</p>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#stores">Find Stores</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-newsletter">
+          <h3>Subscribe to Our Newsletter</h3>
+          <form>
+            <input type="email" placeholder="Your Email" required>
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 LOCAL_CART. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Video Chat Button and Container -->
+  <div class="video-chat-toggle" id="video-chat-toggle">
+    <i class="fas fa-video"></i>
+  </div>
+  
+  <div class="video-chat-container" id="video-chat-container">
+    <div class="video-chat-header">
+      <h3>Talk to a Store Associate</h3>
+      <span class="close" id="close-video-chat">&times;</span>
+    </div>
+    <div class="video-chat-content" id="video-chat-content">
+      <!-- Video chat will be loaded here -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // DOM Elements
+      const productsContainer = document.getElementById('products-container');
+      const cartModal = document.getElementById('cart-modal');
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      const cartCount = document.getElementById('cart-count');
+      const cartButton = document.getElementById('cart-button');
+      const clearCartButton = document.getElementById('clear-cart');
+      const checkoutButton = document.getElementById('checkout-btn');
+      const checkoutModal = document.getElementById('checkout-modal');
+      const checkoutForm = document.getElementById('checkout-form');
+      const orderItems = document.getElementById('order-items');
+      const orderTotal = document.getElementById('order-total');
+      const confirmationModal = document.getElementById('confirmation-modal');
+      const orderId = document.getElementById('order-id');
+      const orderEmail = document.getElementById('order-email');
+      const continueShoppingButton = document.getElementById('continue-shopping');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      // Video Chat Elements
+      const videoChatToggle = document.getElementById('video-chat-toggle');
+      const videoChatContainer = document.getElementById('video-chat-container');
+      const closeVideoChat = document.getElementById('close-video-chat');
+      const videoChatContent = document.getElementById('video-chat-content');
+      
+      // Store Locator Elements
+      const storesContainer = document.getElementById('stores-container');
+      const storeSearchInput = document.getElementById('store-search-input');
+      const storeSearchBtn = document.getElementById('store-search-btn');
+
+      // Close buttons for modals
+      const closeButtons = document.querySelectorAll('.close');
+
+      // State
+      let products = [];
+      let cart = [];
+      let currentFilter = 'all';
+      let localStores = [];
+      let videoChat = null;
+
+      // Sample local stores
+      const sampleStores = [
+        {
+          id: 1,
+          name: 'LOCAL_CART Downtown',
+          address: '123 Main Street, Downtown, City',
+          image: 'https://images.unsplash.com/photo-1604719312566-8912e9c8a213?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
+          distance: '0.8 miles',
+          phone: '(555) 123-4567',
+          hours: '9:00 AM - 9:00 PM',
+          inventory: {
+            1: { status: 'in-stock', quantity: 15 },
+            2: { status: 'in-stock', quantity: 8 },
+            3: { status: 'low-stock', quantity: 3 },
+            4: { status: 'in-stock', quantity: 12 },
+            5: { status: 'out-of-stock', quantity: 0 },
+            6: { status: 'in-stock', quantity: 6 },
+            7: { status: 'in-stock', quantity: 4 },
+            8: { status: 'low-stock', quantity: 2 }
+          }
+        },
+        {
+          id: 2,
+          name: 'LOCAL_CART Westside',
+          address: '456 West Avenue, Westside, City',
+          image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+          distance: '1.5 miles',
+          phone: '(555) 234-5678',
+          hours: '10:00 AM - 8:00 PM',
+          inventory: {
+            1: { status: 'in-stock', quantity: 10 },
+            2: { status: 'low-stock', quantity: 2 },
+            3: { status: 'in-stock', quantity: 7 },
+            4: { status: 'out-of-stock', quantity: 0 },
+            5: { status: 'in-stock', quantity: 9 },
+            6: { status: 'in-stock', quantity: 5 },
+            7: { status: 'low-stock', quantity: 3 },
+            8: { status: 'in-stock', quantity: 8 }
+          }
+        },
+        {
+          id: 3,
+          name: 'LOCAL_CART Eastside',
+          address: '789 East Boulevard, Eastside, City',
+          image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+          distance: '2.3 miles',
+          phone: '(555) 345-6789',
+          hours: '9:00 AM - 10:00 PM',
+          inventory: {
+            1: { status: 'low-stock', quantity: 3 },
+            2: { status: 'in-stock', quantity: 6 },
+            3: { status: 'in-stock', quantity: 9 },
+            4: { status: 'in-stock', quantity: 7 },
+            5: { status: 'low-stock', quantity: 2 },
+            6: { status: 'out-of-stock', quantity: 0 },
+            7: { status: 'in-stock', quantity: 5 },
+            8: { status: 'in-stock', quantity: 4 }
+          }
+        }
+      ];
+      
+      // Sample products with real images
+      const sampleProducts = [
+        {
+          id: 1,
+          name: 'Premium Smartphone',
+          price: 899.99,
+          description: 'Latest model with high-resolution camera, fast processor and 5G connectivity',
+          image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2027&q=80',
+          category: 'Electronics'
+        },
+        {
+          id: 2,
+          name: 'Ultra-Thin Laptop',
+          price: 1499.99,
+          description: 'Powerful laptop with SSD storage, high-performance graphics and all-day battery life',
+          image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
+          category: 'Electronics'
+        },
+        {
+          id: 3,
+          name: 'Wireless Headphones',
+          price: 249.99,
+          description: 'Noise-cancelling wireless headphones with premium sound quality and comfort',
+          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+          category: 'Electronics'
+        },
+        {
+          id: 4,
+          name: 'Athletic Running Shoes',
+          price: 129.99,
+          description: 'Comfortable running shoes with cushioned soles and breathable material',
+          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+          category: 'Clothing'
+        },
+        {
+          id: 5,
+          name: 'Smart Coffee Maker',
+          price: 119.99,
+          description: 'Programmable coffee maker with smartphone control and thermal carafe',
+          image: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+          category: 'Home'
+        },
+        {
+          id: 6,
+          name: 'Travel Backpack',
+          price: 89.99,
+          description: 'Durable backpack with multiple compartments, USB charging port and anti-theft design',
+          image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+          category: 'Accessories'
+        },
+        {
+          id: 7,
+          name: 'Smart Watch',
+          price: 299.99,
+          description: 'Advanced smartwatch with health monitoring, GPS, and long battery life',
+          image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80',
+          category: 'Electronics'
+        },
+        {
+          id: 8,
+          name: 'Designer Sunglasses',
+          price: 159.99,
+          description: 'Stylish sunglasses with UV protection and polarized lenses',
+          image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80',
+          category: 'Accessories'
+        }
+      ];
+
+      // Add item to cart
+      const addToCart = (productId, quantity) => {
+        const product = products.find(p => p.id === productId);
+        const existingItem = cart.find(item => item.product.id === productId);
+        
+        if (existingItem) {
+          existingItem.quantity += parseInt(quantity) || 1;
+        } else {
+          cart.push({
+            product,
+            quantity: parseInt(quantity) || 1
+          });
+        }
+        
+        updateCartUI();
+        showNotification('Product added to cart!');
+      };
+
+      // Update cart item quantity
+      const updateCartItem = (productId, quantity) => {
+        const itemIndex = cart.findIndex(item => item.product.id === productId);
+        
+        if (itemIndex !== -1) {
+          if (parseInt(quantity) <= 0) {
+            cart.splice(itemIndex, 1);
+          } else {
+            cart[itemIndex].quantity = parseInt(quantity);
+          }
+        }
+        
+        updateCartUI();
+      };
+
+      // Remove item from cart
+      const removeCartItem = (productId) => {
+        const itemIndex = cart.findIndex(item => item.product.id === productId);
+        
+        if (itemIndex !== -1) {
+          cart.splice(itemIndex, 1);
+        }
+        
+        updateCartUI();
+      };
+
+      // Clear cart
+      const clearCart = () => {
+        cart = [];
+        updateCartUI();
+      };
+
+      // Checkout
+      const checkout = (customerData) => {
+        // Show confirmation
+        orderId.textContent = Date.now();
+        orderEmail.textContent = customerData.email;
+        
+        // Clear cart and close checkout modal
+        cart = [];
+        updateCartUI();
+        checkoutModal.style.display = 'none';
+        confirmationModal.style.display = 'block';
+        
+        return true;
+      };
+
+      // Render products
+      const renderProducts = () => {
+        productsContainer.innerHTML = '';
+        
+        const filteredProducts = currentFilter === 'all' 
+          ? products 
+          : products.filter(product => product.category === currentFilter);
+        
+        filteredProducts.forEach(product => {
+          const productCard = document.createElement('div');
+          productCard.className = 'product-card';
+          productCard.innerHTML = `
+            <div class="product-image">
+              <img src="${product.image}" alt="${product.name}">
+            </div>
+            <div class="product-info">
+              <div class="product-category">${product.category}</div>
+              <h3 class="product-name">${product.name}</h3>
+              <div class="product-price">$${product.price.toFixed(2)}</div>
+              <div class="product-description">${product.description}</div>
+              <div class="product-actions">
+                <div class="quantity-control">
+                  <button class="quantity-btn minus" data-id="${product.id}">-</button>
+                  <input type="number" class="quantity-input" value="1" min="1" max="10" data-id="${product.id}">
+                  <button class="quantity-btn plus" data-id="${product.id}">+</button>
+                </div>
+                <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
+              </div>
+            </div>
+          `;
+          
+          productsContainer.appendChild(productCard);
+        });
+        
+        // Add event listeners to quantity buttons and add to cart buttons
+        document.querySelectorAll('.quantity-btn.minus').forEach(button => {
+          button.addEventListener('click', () => {
+            const productId = parseInt(button.getAttribute('data-id'));
+            const input = document.querySelector(`.quantity-input[data-id="${productId}"]`);
+            let value = parseInt(input.value) - 1;
+            if (value < 1) value = 1;
+            input.value = value;
+          });
+        });
+        
+        document.querySelectorAll('.quantity-btn.plus').forEach(button => {
+          button.addEventListener('click', () => {
+            const productId = parseInt(button.getAttribute('data-id'));
+            const input = document.querySelector(`.quantity-input[data-id="${productId}"]`);
+            let value = parseInt(input.value) + 1;
+            if (value > 10) value = 10;
+            input.value = value;
+          });
+        });
+        
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+          button.addEventListener('click', () => {
+            const productId = parseInt(button.getAttribute('data-id'));
+            const input = document.querySelector(`.quantity-input[data-id="${productId}"]`);
+            const quantity = parseInt(input.value);
+            addToCart(productId, quantity);
+          });
+        });
+      };
+
+      // Update cart UI
+      const updateCartUI = () => {
+        // Update cart count
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+        
+        // Update cart items
+        cartItems.innerHTML = '';
+        
+        if (cart.length === 0) {
+          cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+          checkoutButton.disabled = true;
+          checkoutButton.classList.add('disabled');
+        } else {
+          cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+              <div class="cart-item-image">
+                <img src="${item.product.image}" alt="${item.product.name}">
+              </div>
+              <div class="cart-item-details">
+                <div class="cart-item-name">${item.product.name}</div>
+                <div class="cart-item-price">$${item.product.price.toFixed(2)}</div>
+                <div class="cart-item-actions">
+                  <div class="cart-quantity">
+                    <button class="cart-quantity-btn minus" data-id="${item.product.id}">-</button>
+                    <input type="number" class="cart-quantity-input" value="${item.quantity}" min="1" data-id="${item.product.id}">
+                    <button class="cart-quantity-btn plus" data-id="${item.product.id}">+</button>
+                  </div>
+                  <div class="remove-item" data-id="${item.product.id}">Remove</div>
+                </div>
+              </div>
+            `;
+            
+            cartItems.appendChild(cartItem);
+          });
+          
+          // Add event listeners to cart item buttons
+          document.querySelectorAll('.cart-quantity-btn.minus').forEach(button => {
+            button.addEventListener('click', () => {
+              const productId = parseInt(button.getAttribute('data-id'));
+              const input = document.querySelector(`.cart-quantity-input[data-id="${productId}"]`);
+              let value = parseInt(input.value) - 1;
+              if (value < 1) value = 1;
+              input.value = value;
+              updateCartItem(productId, value);
+            });
+          });
+          
+          document.querySelectorAll('.cart-quantity-btn.plus').forEach(button => {
+            button.addEventListener('click', () => {
+              const productId = parseInt(button.getAttribute('data-id'));
+              const input = document.querySelector(`.cart-quantity-input[data-id="${productId}"]`);
+              let value = parseInt(input.value) + 1;
+              input.value = value;
+              updateCartItem(productId, value);
+            });
+          });
+          
+          document.querySelectorAll('.cart-quantity-input').forEach(input => {
+            input.addEventListener('change', () => {
+              const productId = parseInt(input.getAttribute('data-id'));
+              updateCartItem(productId, input.value);
+            });
+          });
+          
+          document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', () => {
+              const productId = parseInt(button.getAttribute('data-id'));
+              removeCartItem(productId);
+            });
+          });
+          
+          checkoutButton.disabled = false;
+          checkoutButton.classList.remove('disabled');
+        }
+        
+        // Update cart total
+        const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        cartTotal.textContent = `$${total.toFixed(2)}`;
+        
+        // Update order items and total in checkout
+        orderItems.innerHTML = '';
+        
+        cart.forEach(item => {
+          const orderItem = document.createElement('div');
+          orderItem.className = 'order-item';
+          orderItem.innerHTML = `
+            <span>${item.product.name} x ${item.quantity}</span>
+            <span>$${(item.product.price * item.quantity).toFixed(2)}</span>
+          `;
+          
+          orderItems.appendChild(orderItem);
+        });
+        
+        orderTotal.textContent = `$${total.toFixed(2)}`;
+      };
+
+      // Show notification
+      const showNotification = (message) => {
+        // Create notification element if it doesn't exist
+        let notification = document.querySelector('.notification');
+        
+        if (!notification) {
+          notification = document.createElement('div');
+          notification.className = 'notification';
+          document.body.appendChild(notification);
+        }
+        
+        notification.textContent = message;
+        notification.classList.add('show');
+        
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000);
+      };
+
+      // Event Listeners
+      cartButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        cartModal.style.display = 'block';
+      });
+
+      clearCartButton.addEventListener('click', clearCart);
+
+      checkoutButton.addEventListener('click', () => {
+        cartModal.style.display = 'none';
+        checkoutModal.style.display = 'block';
+      });
+
+      checkoutForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const customerData = {
+          name: document.getElementById('checkout-name').value,
+          email: document.getElementById('checkout-email').value,
+          phone: document.getElementById('checkout-phone').value,
+          address: document.getElementById('checkout-address').value,
+          city: document.getElementById('checkout-city').value,
+          zip: document.getElementById('checkout-zip').value,
+          card: document.getElementById('checkout-card').value,
+          expiry: document.getElementById('checkout-expiry').value
+        };
+        
+        checkout(customerData);
+      });
+
+      continueShoppingButton.addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+      });
+
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          currentFilter = button.getAttribute('data-category');
+          renderProducts();
+        });
+      });
+
+      closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          cartModal.style.display = 'none';
+          checkoutModal.style.display = 'none';
+          confirmationModal.style.display = 'none';
+        });
+      });
+
+      window.addEventListener('click', (e) => {
+        if (e.target === cartModal) cartModal.style.display = 'none';
+        if (e.target === checkoutModal) checkoutModal.style.display = 'none';
+        if (e.target === confirmationModal) confirmationModal.style.display = 'none';
+      });
+
+      // Function to render local stores
+      function renderStores(searchTerm = '') {
+        localStores = [...sampleStores];
+        
+        // Filter stores by search term if provided
+        if (searchTerm) {
+          const term = searchTerm.toLowerCase();
+          localStores = localStores.filter(store => 
+            store.name.toLowerCase().includes(term) || 
+            store.address.toLowerCase().includes(term)
+          );
+        }
+        
+        // Clear the stores container
+        storesContainer.innerHTML = '';
+        
+        if (localStores.length === 0) {
+          storesContainer.innerHTML = '<p class="empty-message">No stores found matching your search.</p>';
+          return;
+        }
+        
+        // Create store cards
+        localStores.forEach(store => {
+          const storeCard = document.createElement('div');
+          storeCard.className = 'store-card';
+          
+          // Create inventory status for products in cart
+          let inventoryHTML = '';
+          if (cart.length > 0) {
+            inventoryHTML = '<div class="store-inventory"><h4>Inventory Status for Cart Items:</h4><ul>';
+            cart.forEach(item => {
+              const productInventory = store.inventory[item.product.id];
+              if (productInventory) {
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(productInventory.status) {
+                  case 'in-stock':
+                    statusClass = 'in-stock';
+                    statusText = `In Stock (${productInventory.quantity})`;
+                    break;
+                  case 'low-stock':
+                    statusClass = 'low-stock';
+                    statusText = `Low Stock (${productInventory.quantity})`;
+                    break;
+                  case 'out-of-stock':
+                    statusClass = 'out-of-stock';
+                    statusText = 'Out of Stock';
+                    break;
+                }
+                
+                inventoryHTML += `
+                  <li>
+                    <span>${item.product.name} (Qty: ${item.quantity})</span>
+                    <span class="inventory-status ${statusClass}">${statusText}</span>
+                  </li>
+                `;
+              }
+            });
+            inventoryHTML += '</ul></div>';
+          }
+          
+          storeCard.innerHTML = `
+            <div class="store-image">
+              <img src="${store.image}" alt="${store.name}">
+            </div>
+            <div class="store-info">
+              <h3>${store.name}</h3>
+              <p><i class="fas fa-map-marker-alt"></i> ${store.address}</p>
+              <p><i class="fas fa-route"></i> ${store.distance}</p>
+              <p><i class="fas fa-phone"></i> ${store.phone}</p>
+              <p><i class="fas fa-clock"></i> ${store.hours}</p>
+            </div>
+            <div class="store-actions">
+              <button class="btn primary-btn video-chat-btn" data-store-id="${store.id}">
+                <i class="fas fa-video"></i> Video Chat with Store
+              </button>
+              <button class="btn secondary-btn">
+                <i class="fas fa-directions"></i> Get Directions
+              </button>
+            </div>
+            ${inventoryHTML}
+          `;
+          
+          storesContainer.appendChild(storeCard);
+        });
+        
+        // Add event listeners to video chat buttons
+        document.querySelectorAll('.video-chat-btn').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const storeId = e.currentTarget.dataset.storeId;
+            const store = localStores.find(s => s.id === parseInt(storeId));
+            initVideoChat(store);
+          });
+        });
+      }
+      
+      // Function to initialize video chat
+      function initVideoChat(store) {
+        // Show the video chat container
+        videoChatContainer.style.display = 'flex';
+        
+        // Set the store name in the header
+        document.getElementById('video-chat-store-name').textContent = store.name;
+        
+        // Initialize Jitsi Meet API
+        const domain = 'meet.jit.si';
+        const options = {
+          roomName: `local-cart-store-${store.id}-${Date.now()}`,
+          width: '100%',
+          height: '100%',
+          parentNode: videoChatContent,
+          interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: [
+              'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+              'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+              'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+              'videoquality', 'filmstrip', 'feedback', 'stats', 'shortcuts',
+              'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone'
+            ],
+          }
+        };
+        
+        // Create the Jitsi Meet API instance
+        videoChat = new JitsiMeetExternalAPI(domain, options);
+        
+        // Add event listeners
+        videoChat.addEventListeners({
+          videoConferenceJoined: () => {
+            showNotification(`Connected to ${store.name} via video chat`);
+          },
+          videoConferenceLeft: () => {
+            closeVideoChat();
+          }
+        });
+      }
+      
+      // Function to close video chat
+      function closeVideoChat() {
+        if (videoChat) {
+          videoChat.dispose();
+          videoChat = null;
+        }
+        videoChatContainer.style.display = 'none';
+        videoChatContent.innerHTML = '';
+      }
+      
+      // Video chat toggle button event listener
+      if (videoChatToggle) {
+        videoChatToggle.addEventListener('click', () => {
+          if (cart.length === 0) {
+            showNotification('Add items to your cart first to start a video chat!');
+            return;
+          }
+          
+          // If no stores are loaded yet, render them
+          if (localStores.length === 0) {
+            renderStores();
+          }
+          
+          // Scroll to stores section
+          document.getElementById('stores').scrollIntoView({ behavior: 'smooth' });
+          showNotification('Select a store to start a video chat');
+        });
+      }
+      
+      // Close video chat button event listener
+      if (closeVideoChat) {
+        document.getElementById('close-video-chat').addEventListener('click', () => {
+          closeVideoChat();
+        });
+      }
+      
+      // Store search button event listener
+      if (storeSearchBtn) {
+        storeSearchBtn.addEventListener('click', () => {
+          const searchTerm = storeSearchInput.value.trim();
+          renderStores(searchTerm);
+        });
+      }
+      
+      // Store search input (search on enter key)
+      if (storeSearchInput) {
+        storeSearchInput.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') {
+            const searchTerm = storeSearchInput.value.trim();
+            renderStores(searchTerm);
+          }
+        });
+      }
+
+      // Initialize
+      products = sampleProducts;
+      renderProducts();
+      updateCartUI();
+      renderStores();
+    });
+  </script>
+</body>
+</html>
