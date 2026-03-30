@@ -1,24 +1,16 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import catchAsync from '../utils/catchAsync.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-import { users } from '../data/mockData.js';
+import User from '../models/User.js';
 
-const generateaccesstokenandrefreshtoken = async (user) => {
+const generateaccesstokenandrefreshtoken = async (userid) => {
   try {
-    const accesstoken = jwt.sign(
-      { _id: user._id, email: user.email, username: user.username, fullname: user.fullname },
-      process.env.ACCESS_TOKEN_SECRET || 'fallback_secret',
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1d' }
-    );
-    const refreshtoken = jwt.sign(
-      { _id: user._id },
-      process.env.REFRESH_TOKEN_SECRET || 'fallback_refresh_secret',
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '10d' }
-    );
+    const user = await User.findById(userid);
+    const accesstoken = user.generateAccessToken();
+    const refreshtoken = user.generateRefreshToken();
 
     user.refreshtoken = refreshtoken;
+    await user.save({ validateBeforeSave: false });
 
     return { accesstoken, refreshtoken };
   } catch (error) {
@@ -33,7 +25,10 @@ export const getUserProfile = catchAsync(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const existedUser = users.find(u => u.email === email || u.username === username);
+  const existedUser = await User.findOne({ 
+    $or: [{ username }, { email }] 
+  });
+  
   if (existedUser) {
     throw new ApiError(409, "User already exists with this email or username");
   }
@@ -43,23 +38,22 @@ export const getUserProfile = catchAsync(async (req, res) => {
     throw new ApiError(400, "Avatar is required");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = {
-    _id: Date.now().toString(),
+  const user = await User.create({
     fullname,
     email,
     username: username.toLowerCase(),
-    password: hashedPassword,
+    password, // Mongoose hook will hash this
     avatar: `/temp/${avatarlocalpath}`,
     coverimage: req.files?.coverimage?.[0]?.filename ? `/temp/${req.files.coverimage[0].filename}` : ""
-  };
-  
-  users.push(newUser);
+  });
 
-  const createduser = { ...newUser };
-  delete createduser.password;
-  delete createduser.refreshtoken;
+  const createduser = await User.findById(user._id).select(
+    "-password -refreshtoken"
+  );
+
+  if (!createduser) {
+    throw new ApiError(500, "Something went wrong while registering the user");
+  }
 
   return res.status(201).json(new ApiResponse(201, "User created successfully", createduser));
 });
@@ -71,21 +65,22 @@ export const userlogin = catchAsync(async (req, res) => {
     throw new ApiError(400, "Username/Email and password are required");
   }
 
-  const user = users.find(u => u.email === email || u.username === username);
+  const user = await User.findOne({
+    $or: [{ username }, { email }]
+  });
+
   if (!user) {
     throw new ApiError(404, "User not found with this email or username");
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  const isPasswordMatch = await user.passwordmatch(password);
   if (!isPasswordMatch) {
     throw new ApiError(401, "Invalid password or user credentials");
   }
 
-  const { accesstoken, refreshtoken } = await generateaccesstokenandrefreshtoken(user);
+  const { accesstoken, refreshtoken } = await generateaccesstokenandrefreshtoken(user._id);
   
-  const userdetails = { ...user };
-  delete userdetails.password;
-  delete userdetails.refreshtoken;
+  const loggedInUser = await User.findById(user._id).select("-password -refreshtoken");
 
   const options = { httpOnly: true, secure: process.env.NODE_ENV === "production" };
   
@@ -93,13 +88,16 @@ export const userlogin = catchAsync(async (req, res) => {
     .status(200)
     .cookie("refreshtoken", refreshtoken, options)
     .cookie("accesstoken", accesstoken, options)
-    .json(new ApiResponse(200, "User logged in successfully", { user: userdetails, accesstoken }));
+    .json(new ApiResponse(200, "User logged in successfully", { user: loggedInUser, accesstoken }));
 });
 
 export const logoutuser = catchAsync(async (req, res) => {
-  const user = users.find(u => u._id === req.user._id);
-  if (user) {
-    delete user.refreshtoken;
+  if (req.user?._id) {
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $unset: { refreshtoken: 1 } },
+      { new: true }
+    );
   }
 
   const options = { httpOnly: true, secure: process.env.NODE_ENV === "production" };

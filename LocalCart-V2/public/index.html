@@ -17,10 +17,116 @@
   <script src="https://meet.jit.si/external_api.js"></script>
 </head>
 <body>
+  <style>
+    /* Odoo style navbar overrides */
+    header {
+      background-color: #ffffff;
+      border-top: 4px solid #714B67; /* The dark top strip from Odoo */
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 !important; /* Override current header padding */
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    /* Logo styling to mimic Odoo logo vibes (purple + grey) */
+    header .logo h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      color: #714B67;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    header .logo h1 span {
+      color: #4A5568;
+    }
+    header nav {
+      flex-grow: 1; /* Push the middle links towards the right a bit, or keep centered by using justify-content space-between and margin */
+      margin-left: 3rem; 
+    }
+    header nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    header nav a {
+      text-decoration: none;
+      color: #4A5568;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.1s ease;
+    }
+    header nav a:hover, header nav a.active {
+      color: #714B67;
+    }
+    header .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    header #nav-login-btn {
+      background: none;
+      border: none;
+      color: #4A5568;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      padding: 0;
+      box-shadow: none; /* override current btn styles */
+    }
+    header #nav-login-btn:hover {
+      color: #714B67;
+      background: none;
+    }
+    header #nav-register-btn {
+      background-color: #714B67;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    header #nav-register-btn:hover {
+      background-color: #5a3c52;
+    }
+    header .cart-icon a {
+      color: #4A5568;
+      text-decoration: none;
+      font-size: 1.2rem;
+      position: relative;
+    }
+    header .cart-icon a:hover {
+      color: #714B67;
+    }
+    header #cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background-color: #714B67;
+      color: white;
+      border-radius: 50%;
+      padding: 1px 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+  </style>
   <header>
     <div class="container">
       <div class="logo">
-        <h1>LocalCart</h1>
+        <h1>Local<span>Cart</span></h1>
       </div>
       <nav>
         <ul>
@@ -29,16 +135,16 @@
           <li><a href="#stores">Find Stores</a></li>
         </ul>
       </nav>
-      <div class="header-actions" style="display:flex; gap:1.5rem; align-items:center;">
+      <div class="header-actions">
         <div class="auth-container">
-          <div id="unauthenticated-nav">
-            <button class="btn btn-sm btn-outline" id="nav-login-btn">Log In</button>
-            <button class="btn btn-sm" id="nav-register-btn">Sign Up</button>
+          <div id="unauthenticated-nav" style="display:flex; gap:1.5rem; align-items:center;">
+            <button id="nav-login-btn">Sign In</button>
+            <button id="nav-register-btn">Sign Up</button>
           </div>
           <div id="authenticated-nav" style="display:none; align-items:center; gap:0.5rem;">
-            <img id="nav-avatar" src="" alt="avatar" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--primary-color);">
-            <p id="nav-username" style="font-weight:600; margin:0;"></p>
-            <button class="btn btn-sm btn-outline" id="nav-logout-btn" style="margin-left:0.5rem;">Logout</button>
+            <img id="nav-avatar" src="" alt="avatar" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid #714B67;">
+            <p id="nav-username" style="font-weight:600; margin:0; color: #4A5568"></p>
+            <button class="btn btn-sm btn-outline" id="nav-logout-btn" style="margin-left:0.5rem; color:#714B67; border-color:#714B67">Logout</button>
           </div>
         </div>
         <div class="cart-icon">
@@ -80,6 +186,20 @@
       </div>
     </section>
 
+    <!-- Store Locator Section -->
+    <section id="stores" class="stores">
+      <div class="container">
+        <h2 class="section-title">Find Local Stores</h2>
+        <div class="store-search">
+          <input type="text" id="store-search-input" placeholder="Enter location or zip code...">
+          <button id="store-search-button" class="btn">Search</button>
+        </div>
+        <div id="stores-container" class="stores-grid">
+          <!-- Stores will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
     <!-- About Section -->
     <section id="about" class="about">
       <div class="container">
@@ -110,19 +230,7 @@
       </div>
     </section>
 
-    <!-- Store Locator Section -->
-    <section id="stores" class="stores">
-      <div class="container">
-        <h2 class="section-title">Find Local Stores</h2>
-        <div class="store-search">
-          <input type="text" id="store-search-input" placeholder="Enter location or zip code...">
-          <button id="store-search-button" class="btn">Search</button>
-        </div>
-        <div id="stores-container" class="stores-grid">
-          <!-- Stores will be loaded here dynamically -->
-        </div>
-      </div>
-    </section>
+
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
@@ -252,7 +360,7 @@
         <div class="cart-summary">
           <div class="cart-total">
             <span>Total:</span>
-            <span id="cart-total">$0.00</span>
+            <span id="cart-total">₹0.00</span>
           </div>
         </div>
       </div>
@@ -305,7 +413,7 @@
             </div>
             <div class="order-total">
               <span>Total:</span>
-              <span id="order-total">$0.00</span>
+              <span id="order-total">₹0.00</span>
             </div>
           </div>
           <button type="submit" class="btn">Place Order</button>
@@ -375,6 +483,7 @@
   <script src="/socket.io/socket.io.js"></script>
   
   <!-- Add scripts at the end of the body -->
+  <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
   <script src="js/hybrid-api.js"></script>
   <script src="js/hybrid-client.js"></script>

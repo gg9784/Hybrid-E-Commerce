@@ -40,8 +40,8 @@ function init3DViewer() {
   // Create 3D viewer elements
   create3DViewerElements();
   
-  // Add 3D view buttons to products
-  addViewIn3DButtons();
+  // Add 3D view buttons to products (DISABLED PER REQUEST)
+  // addViewIn3DButtons();
 }
 
 /**

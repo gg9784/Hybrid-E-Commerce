@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="product-info">
           <h3 class="product-name">${product.name}</h3>
-          <div class="product-price">$${product.price.toFixed(2)}</div>
+          <div class="product-price">₹${product.price.toFixed(2)}</div>
           <div class="product-description">${product.description}</div>
           <div class="product-actions">
             <div class="quantity-control">
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="cart-item-details">
             <div class="cart-item-name">${item.product.name}</div>
-            <div class="cart-item-price">$${item.product.price.toFixed(2)}</div>
+            <div class="cart-item-price">₹${item.product.price.toFixed(2)}</div>
             <div class="cart-item-actions">
               <div class="cart-quantity">
                 <button class="cart-quantity-btn minus" data-id="${item.product.id}">-</button>
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update cart total
     const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-    cartTotal.textContent = `$${total.toFixed(2)}`;
+    cartTotal.textContent = `₹${total.toFixed(2)}`;
     
     // Update order items and total in checkout modal
     orderItems.innerHTML = '';
@@ -302,13 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
       orderItem.className = 'order-item';
       orderItem.innerHTML = `
         <span>${item.product.name} x ${item.quantity}</span>
-        <span>$${(item.product.price * item.quantity).toFixed(2)}</span>
+        <span>₹${(item.product.price * item.quantity).toFixed(2)}</span>
       `;
       
       orderItems.appendChild(orderItem);
     });
     
-    orderTotal.textContent = `$${total.toFixed(2)}`;
+    orderTotal.textContent = `₹${total.toFixed(2)}`;
     
     // Add event listeners to cart quantity buttons and remove buttons
     document.querySelectorAll('.cart-quantity-btn.minus').forEach(button => {

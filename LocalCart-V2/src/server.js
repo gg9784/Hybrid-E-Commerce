@@ -8,8 +8,8 @@ import registerSocketHandlers from './sockets/socketHandlers.js';
 
 const PORT = process.env.PORT || 5000;
 
-// Connect Setup (MongoDB disabled for Mock UI testing mode)
-// connectDB();
+// Connect Setup
+connectDB();
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -26,6 +26,15 @@ const io = new Server(server, {
 registerSocketHandlers(io);
 
 // Start Server
-server.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+  }
+};
+
+startServer();
