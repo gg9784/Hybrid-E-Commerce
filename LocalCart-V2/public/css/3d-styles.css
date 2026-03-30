@@ -1,40 +1,75 @@
-/* 3D Viewer Styles */
-.viewer-3d-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
+/* ==========================================================================
+   3D Viewer Component Styles
+   ========================================================================== */
+
+:root {
+  /* Design Tokens - Makes theming and maintenance incredibly easy */
+  --v3d-primary: #4CAF50;
+  --v3d-primary-hover: #43A047;
+  --v3d-secondary: #673AB7;
+  --v3d-secondary-hover: #5E35B1;
+  --v3d-surface: #ffffff;
+  --v3d-surface-muted: #f5f5f5;
+  --v3d-text-main: #333333;
+  --v3d-text-muted: #666666;
+  --v3d-border: #eeeeee;
+  
+  /* Layout & Animation Variables */
+  --v3d-overlay-bg: rgb(0 0 0 / 60%);
+  --v3d-radius: 12px;
+  --v3d-z-index: 2000;
+  --v3d-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
 }
 
+/* --- Modal Overlay Container --- */
+.viewer-3d-container {
+  position: fixed;
+  inset: 0; /* Modern shorthand for top/left/right/bottom: 0 */
+  z-index: var(--v3d-z-index);
+  display: grid; /* Grid allows for 1-line perfect centering */
+  place-items: center;
+  background-color: var(--v3d-overlay-bg);
+  backdrop-filter: blur(4px); /* Adds a premium frosted-glass effect */
+  
+  /* Initial hidden state */
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--v3d-transition), visibility var(--v3d-transition);
+}
+
+/* State class added to the container via JavaScript */
+.viewer-3d-container.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* --- Modal Panel --- */
 .viewer-3d-panel {
-  width: 90%;
-  max-width: 1000px;
-  height: 80%;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: min(90%, 1000px); /* Modern shorthand replacing max-width */
+  height: 80dvh; /* dvh (dynamic viewport height) handles mobile browser UI better */
+  background-color: var(--v3d-surface);
+  border-radius: var(--v3d-radius);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: scale(0);
-  transition: transform 0.3s ease;
-  pointer-events: auto;
+  
+  /* Subtle scale effect instead of jarring scale(0) */
+  transform: scale(0.95) translateY(10px);
+  transition: transform var(--v3d-transition);
 }
 
-.viewer-3d-panel.open {
-  transform: scale(1);
+.viewer-3d-container.is-open .viewer-3d-panel {
+  transform: scale(1) translateY(0);
 }
 
+/* --- Header --- */
 .viewer-3d-header {
-  padding: 15px;
-  background-color: #4CAF50;
-  color: white;
+  padding: 1rem 1.25rem; /* Using rem for scalable, accessible spacing */
+  background-color: var(--v3d-primary);
+  color: var(--v3d-surface);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,84 +77,118 @@
 
 .viewer-3d-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
+/* --- Buttons --- */
 .viewer-3d-close {
-  background: none;
+  background: transparent;
   border: none;
-  color: white;
+  color: currentColor; /* Inherits white from header */
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: opacity 0.2s ease;
 }
 
+.viewer-3d-close:hover {
+  opacity: 0.8;
+}
+
+/* Accessibility: Visible focus state for keyboard navigation */
+.viewer-3d-close:focus-visible {
+  outline: 2px solid var(--v3d-surface);
+  outline-offset: 2px;
+}
+
+.view-3d-btn {
+  background-color: var(--v3d-secondary);
+  color: var(--v3d-surface);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.view-3d-btn:hover {
+  background-color: var(--v3d-secondary-hover);
+}
+
+.view-3d-btn:active {
+  transform: translateY(1px); /* Tactile click effect */
+}
+
+.view-3d-btn:focus-visible {
+  outline: 2px solid var(--v3d-secondary);
+  outline-offset: 2px;
+}
+
+/* --- Canvas Area --- */
 .viewer-3d-canvas-container {
   flex: 1;
   overflow: hidden;
   position: relative;
+  background-color: #000; /* Often better to have a dark backing for 3D load */
 }
 
 .viewer-3d-canvas-container canvas {
   width: 100%;
   height: 100%;
   display: block;
+  outline: none; /* Prevents ugly border when canvas is clicked */
 }
 
+/* --- Product Info Footer --- */
 .viewer-3d-product-info {
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-top: 1px solid #eee;
+  padding: 1rem 1.25rem;
+  background-color: var(--v3d-surface-muted);
+  border-top: 1px solid var(--v3d-border);
 }
 
 .viewer-3d-product-info h4 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
-  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: var(--v3d-text-main);
 }
 
 .viewer-3d-product-info p {
   margin: 0;
-  font-size: 14px;
-  color: #666;
+  font-size: 0.875rem;
+  color: var(--v3d-text-muted);
+  line-height: 1.5;
 }
 
-/* View in 3D button */
-.view-3d-btn {
-  background-color: #673AB7;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.view-3d-btn:hover {
-  background-color: #5E35B1;
-}
-
-.view-3d-btn i {
-  font-size: 16px;
-}
-
-/* Loading indicator */
+/* --- Loading Indicator --- */
 .loading-3d {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: var(--v3d-surface);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+/* Hide loader when a class is added via JS */
+.loading-3d.is-loaded {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .loading-3d i {
-  font-size: 40px;
-  color: #4CAF50;
-  animation: spin 2s linear infinite;
+  font-size: 2.5rem;
+  color: var(--v3d-primary);
+  animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; /* Smoother spin */
 }
 
 @keyframes spin {
@@ -127,15 +196,20 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* --- Responsive Adjustments --- */
+@media (max-width: 48rem) { /* 768px in rems */
   .viewer-3d-panel {
     width: 95%;
-    height: 70%;
+    height: 85dvh;
+  }
+  
+  .viewer-3d-header,
+  .viewer-3d-product-info {
+    padding: 0.875rem 1rem;
   }
   
   .view-3d-btn {
-    font-size: 12px;
-    padding: 6px 10px;
+    width: 100%; /* Full width buttons are better for mobile touch targets */
+    justify-content: center;
   }
 }
