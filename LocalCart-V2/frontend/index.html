@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalCart - Online Shopping with 3D Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/auth-styles.css">
+  <link rel="stylesheet" href="css/hybrid-styles.css">
+  <link rel="stylesheet" href="css/chatbot-styles.css">
+  <link rel="stylesheet" href="css/3d-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Jitsi Meet API script -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+</head>
+
+<body>
+  <style>
+    /* Premium Marketplace Header Styles */
+    :root {
+      --primary-purple: #714B67;
+      --light-grey: #f8f9fa;
+      --text-dark: #2d3436;
+      --text-grey: #636e72;
+    }
+
+    header {
+      background-color: #ffffff;
+      border-top: 4px solid var(--primary-purple);
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    header .container {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      height: 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      color: var(--primary-purple);
+      font-weight: 800;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+
+    .logo h1 span {
+      color: var(--text-dark);
+    }
+
+    /* Search Bar Design */
+    .header-search {
+      display: flex;
+      max-width: 800px;
+      width: 100%;
+      background: var(--light-grey);
+      border-radius: 8px;
+      border: 1px solid #dfe6e9;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .header-search:focus-within {
+      border-color: var(--primary-purple);
+      box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.1);
+      background: #fff;
+    }
+
+    .search-category {
+      border-right: 1px solid #dfe6e9;
+      background: transparent;
+      padding: 0 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-grey);
+      cursor: pointer;
+      outline: none;
+    }
+
+    .header-search input {
+      flex-grow: 1;
+      border: none;
+      background: transparent;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      outline: none;
+      color: var(--text-dark);
+    }
+
+    .search-btn {
+      background: var(--primary-purple);
+      color: white;
+      border: none;
+      padding: 0 1.5rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+
+    .search-btn:hover {
+      background: #5a3c52;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-grey);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary-purple);
+    }
+
+    .nav-btn i {
+      font-size: 1.2rem;
+    }
+
+    #nav-register-btn {
+      background-color: var(--primary-purple);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    #nav-register-btn:hover {
+      background-color: #5a3c52;
+      color: white;
+    }
+
+    .cart-btn {
+      position: relative;
+    }
+
+    #cart-count {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background: #ff4757;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 20px;
+      border: 2px solid #fff;
+    }
+
+    /* Auth state avatars */
+    #nav-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--primary-purple);
+      object-fit: cover;
+    }
+
+    @media (max-width: 991px) {
+      header .container {
+        grid-template-columns: auto auto;
+        gap: 1rem;
+        height: auto;
+        padding: 1rem;
+      }
+      .header-search {
+        grid-row: 2;
+        grid-column: 1 / span 2;
+        max-width: none;
+      }
+    }
+  </style>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="#/" style="text-decoration: none;">
+          <h1>Local<span>Cart</span></h1>
+        </a>
+      </div>
+
+      <div class="header-search">
+        <select class="search-category" id="search-cat-select">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Kirana">Kirana</option>
+        </select>
+        <input type="text" id="global-search-input" placeholder="Search for products, stores or categories...">
+        <button class="search-btn" id="global-search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <div class="auth-container">
+          <div id="unauthenticated-nav" style="display:flex; gap:1rem; align-items:center;">
+            <button class="nav-btn" id="nav-login-btn">
+              <i class="fas fa-user"></i>
+              <span>Sign In</span>
+            </button>
+            <button class="btn" id="nav-register-btn">Join Now</button>
+          </div>
+          <div id="authenticated-nav" style="display:none; align-items:center; gap:1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; cursor: pointer;">
+              <img id="nav-avatar" src="" alt="avatar">
+              <div style="display: flex; flex-direction: column;">
+                <span id="nav-username" style="font-weight:700; font-size: 0.9rem; color: var(--text-dark)"></span>
+                <span style="font-size: 0.75rem; color: var(--text-grey)">My Account</span>
+              </div>
+            </div>
+            <button class="nav-btn" id="nav-logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+        
+        <button class="nav-btn cart-btn" id="cart-button">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Cart</span>
+          <span id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Dynamic content will be loaded here by the router -->
+  </main>
+
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <div class="info-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <p>Paota C, Road, Jodhpur</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-phone"></i>
+              <p>+91 98765 43210</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <p>govind43898@gmail.com</p>
+            </div>
+          </div>
+          <form class="contact-form" id="contact-form">
+            <div class="form-group">
+              <input type="text" id="contact-name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <input type="email" id="contact-email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+              <textarea id="contact-message" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Video Chat Button and Container -->
+  <button id="video-chat-toggle" class="video-chat-toggle">
+    <i class="fas fa-video"></i>
+  </button>
+
+  <div id="video-chat-container" class="video-chat-container">
+    <div class="video-chat-header">
+      <h3>Video Chat</h3>
+      <button id="video-chat-close" class="video-chat-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="video-chat-info" class="video-chat-info">
+      No active video chat
+    </div>
+    <div id="video-chat-content" class="video-chat-content">
+      <!-- Video chat will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal">
+    <div class="modal-content auth-modal-content">
+      <div class="modal-header">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Log In</button>
+          <button class="auth-tab" data-tab="register">Sign Up</button>
+        </div>
+        <span class="close-btn" id="auth-close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form active">
+          <div class="form-group">
+            <label for="login-identifier">Email or Username</label>
+            <input type="text" id="login-identifier" required placeholder="johndoe or john@example.com">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required>
+          </div>
+          <button type="submit" class="btn btn-full" id="login-submit-btn">Log In</button>
+          <div class="auth-error" id="login-error"></div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label for="reg-fullname">Full Name</label>
+            <input type="text" id="reg-fullname" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-avatar">Profile Avatar <span style="color:red">*</span></label>
+            <input type="file" id="reg-avatar" accept="image/*" required class="file-input">
+          </div>
+          <div class="form-group">
+            <label for="reg-cover">Cover Image (Optional)</label>
+            <input type="file" id="reg-cover" accept="image/*" class="file-input">
+          </div>
+          <button type="submit" class="btn btn-full" id="register-submit-btn">Create Account</button>
+          <div class="auth-error" id="register-error"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Shopping Cart</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="cart-items">
+          <!-- Cart items will be loaded here dynamically -->
+        </div>
+        <div class="cart-summary">
+          <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total">₹0.00</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="clear-cart" class="btn btn-secondary">Clear Cart</button>
+        <button id="checkout-btn" class="btn">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Checkout</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Shipping Address</label>
+            <textarea id="address" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="card">Card Number</label>
+            <input type="text" id="card" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiry">Expiry Date</label>
+              <input type="text" id="expiry" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input type="text" id="cvv" placeholder="XXX" required>
+            </div>
+          </div>
+          <div class="order-summary">
+            <h3>Order Summary</h3>
+            <div id="order-items">
+              <!-- Order items will be loaded here dynamically -->
+            </div>
+            <div class="order-total">
+              <span>Total:</span>
+              <span id="order-total">₹0.00</span>
+            </div>
+          </div>
+          <button type="submit" class="btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Order Confirmation</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="confirmation-message">
+          <i class="fas fa-check-circle"></i>
+          <h3>Thank you for your order!</h3>
+          <p>Your order has been placed successfully.</p>
+          <p>Order ID: <span id="order-id"></span></p>
+          <p>A confirmation email has been sent to <span id="order-email"></span>.</p>
+        </div>
+        <button id="continue-shopping" class="btn">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>LocalCart</h2>
+          <p>Your one-stop shopping destination</p>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#stores">Find Stores</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-newsletter">
+          <h3>Subscribe to Our Newsletter</h3>
+          <form>
+            <input type="email" placeholder="Your Email" required>
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 LocalCart. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main Application Module -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Legacy/Independent Scripts -->
+  <script type="module" src="js/auth.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/3d-viewer.js"></script>
+</body>
+
+</html>
