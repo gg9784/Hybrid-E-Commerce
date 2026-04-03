@@ -63,6 +63,29 @@ const StoreAPI = {
       console.error(`Error fetching inventory for product ${productId} at store ${storeId}:`, error);
       return null;
     }
+  },
+  
+  // Create a new store
+  createStore: async (storeData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stores`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(storeData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create store');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating store:', error);
+      throw error;
+    }
   }
 };
 

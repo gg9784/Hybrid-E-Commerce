@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 const storeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   address: { type: String, required: true },
+  description: { type: String },
   image: { type: String, required: true },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   banner: { type: String }, // Large realistic shop banner image
   rating: { type: Number, default: 0 },
   distance: { type: String }, // Can be calculated or string like '1.5 miles'

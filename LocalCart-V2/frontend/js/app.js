@@ -1,6 +1,7 @@
 import { router } from './router.js';
 import { HomeView } from './views/HomeView.js';
 import { StoreDetailView } from './views/StoreDetailView.js';
+import { RegisterStoreView } from './views/RegisterStoreView.js';
 import { initVideoChat } from './videoChat.js';
 
 // Global API_URL
@@ -312,6 +313,7 @@ window.onclick = (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     router.addRoute('/', HomeView);
     router.addRoute('/store/:id', StoreDetailView);
+    router.addRoute('/register-store', RegisterStoreView);
     
     // Trigger initial route
     router.handleRoute();

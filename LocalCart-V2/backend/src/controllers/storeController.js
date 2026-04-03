@@ -25,10 +25,11 @@ const getStores = catchAsync(async (req, res) => {
 // @route   POST /api/stores
 // @access  Private (or Public if you want)
 const createStore = catchAsync(async (req, res) => {
-  const { name, description, image, owner } = req.body;
+  const { name, address, description, image, owner } = req.body;
 
   const store = new Store({
     name,
+    address,
     description,
     image,
     owner, // optional (if you track store owner)
