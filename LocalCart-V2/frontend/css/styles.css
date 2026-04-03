@@ -1028,23 +1028,49 @@ nav ul li a.active::after {
 /* Video Chat Interface Overlay */
 .video-chat-container {
   position: fixed;
-  bottom: 0;
-  right: 40px;
-  width: 450px;
-  height: 650px;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  max-width: 900px;
+  height: 80vh;
   background: white;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -15px 40px rgba(0,0,0,0.15);
-  z-index: 2000;
-  transform: translateY(100%);
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  z-index: 2100;
+  transform: translate(-50%, -45%) scale(0.95);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .video-chat-container.active {
-  transform: translateY(0);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: all;
 }
+
+.video-chat-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 2050;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.video-chat-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
 
 .video-chat-header {
   padding: 20px;

@@ -14,6 +14,7 @@ function processFile(filePath) {
     return `import ${vars} from '${newPath}';`;
   });
 
+
   // 2. Convert `const a = require('./b')` => `import a from './b.js'`
   content = content.replace(/const\s+([a-zA-Z0-9_]+)\s*=\s*require\((['"])([^'"]+)\2\);?/g, (match, varName, quote, reqPath) => {
     let newPath = reqPath;
@@ -23,14 +24,18 @@ function processFile(filePath) {
     return `import ${varName} from '${newPath}';`;
   });
 
+
   // 3. Convert `require('dotenv').config()` => `import dotenv from 'dotenv';\ndotenv.config();`
   content = content.replace(/require\((['"])dotenv\1\)\.config\(\);?/g, `import dotenv from 'dotenv';\ndotenv.config();`);
+
 
   // 4. Convert `module.exports = { a, b }` => `export { a, b }`
   content = content.replace(/module\.exports\s*=\s*(\{[\s\S]*?\});?/g, "export $1;");
 
+
   // 5. Convert `module.exports = a` => `export default a`
   content = content.replace(/module\.exports\s*=\s*([a-zA-Z0-9_]+);?/g, "export default $1;");
+
 
   // Fix __dirname in app.js
   if (filePath.endsWith('app.js') && content.includes('__dirname')) {
@@ -39,6 +44,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 `;
+
+
     // Find the first line that is not an import
     const lines = content.split('\n');
     const lastImportIdx = lines.findLastIndex(line => line.startsWith('import'));
@@ -66,6 +73,7 @@ function walkDir(dir) {
 const targetDir = path.join(__dirname, 'LocalCart-V2', 'src');
 console.log(`Processing directory: ${targetDir}`);
 walkDir(targetDir);
+
 
 // Update package.json
 const pkgPath = path.join(__dirname, 'LocalCart-V2', 'package.json');

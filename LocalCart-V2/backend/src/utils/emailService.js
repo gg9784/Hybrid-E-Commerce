@@ -49,10 +49,10 @@ export const sendContactEmail = async (data) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('📧 Email notification sent:', info.messageId);
+    console.log('mail notification sent:', info.messageId);
     return info;
   } catch (error) {
-    console.error('❌ Error sending email notification:', error);
+    console.error('Error sending email notification:', error);
     // We don't throw here to avoid failing the whole request if email fails
     return null;
   }

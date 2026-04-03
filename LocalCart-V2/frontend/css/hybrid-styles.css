@@ -386,28 +386,32 @@
 
 .video-chat-container {
   position: fixed;
-  bottom: 90px;
-  right: 20px;
-  width: 350px;
-  height: 500px;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  max-width: 900px;
+  height: 80vh;
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  z-index: 998;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 2100;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: translateY(20px);
+  transform: translate(-50%, -45%) scale(0.95);
   opacity: 0;
   visibility: hidden;
-  transition: transform 0.3s, opacity 0.3s, visibility 0.3s;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s, visibility 0.5s;
 }
 
 .video-chat-container.active {
-  transform: translateY(0);
+  transform: translate(-50%, -50%) scale(1);
   opacity: 1;
   visibility: visible;
+  pointer-events: all;
 }
+
 
 .video-chat-header {
   display: flex;

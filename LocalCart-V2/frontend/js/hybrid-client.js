@@ -394,9 +394,20 @@ async function startVideoChat(storeId) {
       return;
     }
     
+    // Show the container and backdrop
+    let backdrop = document.getElementById('video-chat-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'video-chat-backdrop';
+        backdrop.className = 'video-chat-backdrop';
+        document.body.appendChild(backdrop);
+    }
+    
     // Show loading state
     videoChatInfo.innerHTML = 'Connecting to store...';
+    backdrop.classList.add('active');
     videoChatContainer.classList.add('active');
+
     
     // Get store details
     const store = await window.HybridShoppingPlatform.StoreAPI.getStoreById(storeId);
@@ -516,10 +527,16 @@ async function startVideoChat(storeId) {
  */
 function closeVideoChat() {
   const videoChatContainer = document.getElementById('video-chat-container');
+  const backdrop = document.getElementById('video-chat-backdrop');
   
   if (videoChatContainer) {
     videoChatContainer.classList.remove('active');
   }
+  
+  if (backdrop) {
+    backdrop.classList.remove('active');
+  }
+
   
   if (window.videoChat && window.videoChat.isActive) {
     window.videoChat.dispose();

@@ -21,9 +21,19 @@ export const startVideoChat = async (storeId) => {
 
     if (!videoChatContainer || !videoChatContent || !videoChatInfo) return;
 
-    // Show the container
+    // Show the container and backdrop
+    let backdrop = document.getElementById('video-chat-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'video-chat-backdrop';
+        backdrop.className = 'video-chat-backdrop';
+        document.body.appendChild(backdrop);
+    }
+    
+    backdrop.classList.add('active');
     videoChatContainer.classList.add('active');
     videoChatInfo.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to store...';
+
 
     try {
         // Fetch store details to show name
@@ -92,9 +102,16 @@ export const startVideoChat = async (storeId) => {
 
 export const closeVideoChat = () => {
     const videoChatContainer = document.getElementById('video-chat-container');
+    const backdrop = document.getElementById('video-chat-backdrop');
+    
     if (videoChatContainer) {
         videoChatContainer.classList.remove('active');
     }
+    
+    if (backdrop) {
+        backdrop.classList.remove('active');
+    }
+
 
     if (window.jitsiAPI) {
         window.jitsiAPI.dispose();

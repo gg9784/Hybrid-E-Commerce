@@ -15,15 +15,25 @@ const getCart = catchAsync(async (req, res) => {
 // @access  Private
 const addToCart = catchAsync(async (req, res) => {
   const { productId, quantity } = req.body;
+  
+  if (!productId) {
+    res.status(400);
+    throw new Error('Product ID is required');
+  }
+
   const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(401);
+    throw new Error('User not found. Try logging in again.');
+  }
 
   const product = await Product.findById(productId);
   if (!product) {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Product not found in database');
   }
 
-  const existingItem = user.cart.find(item => item.product.toString() === productId);
+  const existingItem = user.cart.find(item => item.product && item.product.toString() === productId);
 
   if (existingItem) {
     existingItem.quantity += parseInt(quantity) || 1;
@@ -36,8 +46,9 @@ const addToCart = catchAsync(async (req, res) => {
 
   await user.save();
   const populatedUser = await user.populate('cart.product');
-  res.json(populatedUser.cart);
+  res.status(200).json(populatedUser.cart);
 });
+
 
 // @desc    Update cart item quantity
 // @route   PUT /api/cart/:productId
@@ -45,21 +56,21 @@ const addToCart = catchAsync(async (req, res) => {
 const updateCartItem = catchAsync(async (req, res) => {
   const { productId } = req.params;
   const { quantity } = req.body;
-  
+
   const user = await User.findById(req.user._id);
   const item = user.cart.find(i => i.product.toString() === productId);
-  
+
   if (!item) {
     res.status(404);
     throw new Error('Item not found in cart');
   }
-  
+
   if (parseInt(quantity) <= 0) {
     user.cart = user.cart.filter(i => i.product.toString() !== productId);
   } else {
     item.quantity = parseInt(quantity);
   }
-  
+
   await user.save();
   const populatedUser = await user.populate('cart.product');
   res.json(populatedUser.cart);
@@ -71,9 +82,9 @@ const updateCartItem = catchAsync(async (req, res) => {
 const removeFromCart = catchAsync(async (req, res) => {
   const { productId } = req.params;
   const user = await User.findById(req.user._id);
-  
+
   user.cart = user.cart.filter(i => i.product.toString() !== productId);
-  
+
   await user.save();
   const populatedUser = await user.populate('cart.product');
   res.json(populatedUser.cart);
@@ -96,3 +107,4 @@ export {
   removeFromCart,
   clearCart
 };
+

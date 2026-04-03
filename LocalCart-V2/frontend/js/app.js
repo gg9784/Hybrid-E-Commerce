@@ -58,16 +58,27 @@ window.addToCart = async (productId, quantity) => {
         
         if (response.status === 401) {
             showNotification('Please login to add items to cart', 'error');
-            document.getElementById('nav-login-btn').click();
+            // Check if login button exists before clicking
+            const loginBtn = document.getElementById('nav-login-btn');
+            if (loginBtn) loginBtn.click();
             return;
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to add to cart');
         }
 
         cart = await response.json();
         updateCartUI();
-        showNotification('Product added to cart!');
+        showNotification('Product added to cart!', 'success');
     } catch (error) {
         console.error('Error adding to cart:', error);
-        showNotification('Failed to add product to cart.', 'error');
+        if (error.message === 'Failed to fetch') {
+            showNotification('Server is currently unreachable. Please try again later.', 'error');
+        } else {
+            showNotification(error.message || 'Failed to add product back to cart.', 'error');
+        }
     }
 };
 
@@ -225,6 +236,7 @@ const handleGlobalSearch = () => {
 // Event Listeners for Cart
 cartButton.onclick = (e) => { e.preventDefault(); cartModal.style.display = 'block'; fetchCart(); };
 clearCartButton.onclick = clearCartItems;
+
 checkoutButton.onclick = () => { 
   if (cart.length > 0) { 
     cartModal.style.display = 'none'; 
