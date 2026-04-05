@@ -30,7 +30,7 @@ const continueShoppingButton = document.getElementById('continue-shopping');
 // Fetch and update global cart
 const fetchCart = async () => {
     try {
-        const response = await fetch(`${API_URL}/cart`);
+        const response = await fetch(`${API_URL}/cart`, { credentials: 'include' });
         if (response.ok) {
             cart = await response.json();
             updateCartUI();
@@ -55,6 +55,7 @@ window.addToCart = async (productId, quantity) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ productId, quantity: parseInt(quantity) || 1 }),
+            credentials: 'include',
         });
         
         if (response.status === 401) {
@@ -125,7 +126,10 @@ const updateCartUI = () => {
         checkoutButton.disabled = false;
         checkoutButton.classList.remove('disabled');
 
-        const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const total = cart.reduce((sum, item) => {
+            if (!item.product) return sum;
+            return sum + (item.product.price * item.quantity);
+        }, 0);
         cartTotal.textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
         
         orderTotal.textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
@@ -146,7 +150,7 @@ const updateCartUI = () => {
 };
 
 const updateCartItemQuantity = async (productId, delta) => {
-    const item = cart.find(i => i.product._id === productId);
+    const item = cart.find(i => i.product && i.product._id === productId);
     if (!item) return;
     
     const newQty = item.quantity + delta;
@@ -157,6 +161,7 @@ const updateCartItemQuantity = async (productId, delta) => {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ quantity: newQty }),
+            credentials: 'include'
         });
         cart = await response.json();
         updateCartUI();
@@ -165,7 +170,10 @@ const updateCartItemQuantity = async (productId, delta) => {
 
 const removeCartItem = async (productId) => {
     try {
-        const response = await fetch(`${API_URL}/cart/${productId}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/cart/${productId}`, { 
+            method: 'DELETE', 
+            credentials: 'include' 
+        });
         cart = await response.json();
         updateCartUI();
     } catch (error) { console.error(error); }
@@ -173,7 +181,10 @@ const removeCartItem = async (productId) => {
 
 const clearCartItems = async () => {
     try {
-        const response = await fetch(`${API_URL}/cart`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/cart`, { 
+            method: 'DELETE', 
+            credentials: 'include' 
+        });
         cart = await response.json();
         updateCartUI();
     } catch (error) { console.error(error); }
@@ -203,6 +214,7 @@ const checkout = async (customerData) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(customerData),
+        credentials: 'include',
       });
       const result = await response.json();
       
@@ -319,6 +331,17 @@ document.addEventListener('DOMContentLoaded', () => {
     router.handleRoute();
     fetchCart();
     initVideoChat();
+});
+
+// Global Event Delegation for Add To Cart
+document.addEventListener('click', (e) => {
+    const addToCartBtn = e.target.closest('.add-to-cart-btn');
+    if (addToCartBtn) {
+        const productId = addToCartBtn.getAttribute('data-id');
+        if (window.addToCart) {
+            window.addToCart(productId, 1);
+        }
+    }
 });
 
 export { fetchCart, showNotification };

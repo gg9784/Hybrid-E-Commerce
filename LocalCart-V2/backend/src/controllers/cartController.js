@@ -7,7 +7,17 @@ import catchAsync from '../utils/catchAsync.js';
 // @access  Private (JWT protected)
 const getCart = catchAsync(async (req, res) => {
   const user = await User.findById(req.user._id).populate('cart.product');
-  res.json(user.cart);
+  
+  // Filter out items where product no longer exists
+  const validCart = user.cart.filter(item => item.product !== null);
+  
+  // If we filtered anything, save the cleaned up cart
+  if (validCart.length !== user.cart.length) {
+    user.cart = validCart;
+    await user.save();
+  }
+  
+  res.json(validCart);
 });
 
 // @desc    Add item to cart
@@ -46,7 +56,10 @@ const addToCart = catchAsync(async (req, res) => {
 
   await user.save();
   const populatedUser = await user.populate('cart.product');
-  res.status(200).json(populatedUser.cart);
+  
+  // Return cleaned cart
+  const finalCart = populatedUser.cart.filter(item => item.product !== null);
+  res.status(200).json(finalCart);
 });
 
 
@@ -58,7 +71,7 @@ const updateCartItem = catchAsync(async (req, res) => {
   const { quantity } = req.body;
 
   const user = await User.findById(req.user._id);
-  const item = user.cart.find(i => i.product.toString() === productId);
+  const item = user.cart.find(i => i.product && i.product.toString() === productId);
 
   if (!item) {
     res.status(404);
@@ -73,7 +86,8 @@ const updateCartItem = catchAsync(async (req, res) => {
 
   await user.save();
   const populatedUser = await user.populate('cart.product');
-  res.json(populatedUser.cart);
+  const finalCart = populatedUser.cart.filter(item => item.product !== null);
+  res.json(finalCart);
 });
 
 // @desc    Remove item from cart
@@ -83,11 +97,12 @@ const removeFromCart = catchAsync(async (req, res) => {
   const { productId } = req.params;
   const user = await User.findById(req.user._id);
 
-  user.cart = user.cart.filter(i => i.product.toString() !== productId);
+  user.cart = user.cart.filter(i => i.product && i.product.toString() !== productId);
 
   await user.save();
   const populatedUser = await user.populate('cart.product');
-  res.json(populatedUser.cart);
+  const finalCart = populatedUser.cart.filter(item => item.product !== null);
+  res.json(finalCart);
 });
 
 // @desc    Clear entire cart
@@ -107,4 +122,3 @@ export {
   removeFromCart,
   clearCart
 };
-

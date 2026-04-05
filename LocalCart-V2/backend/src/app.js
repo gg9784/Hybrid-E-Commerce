@@ -23,7 +23,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -37,10 +41,8 @@ if (process.env.NODE_ENV === 'production') {
     if (req.method === 'GET' && !req.originalUrl.startsWith('/api')) {
       return res.sendFile(path.join(frontendPath, 'index.html'));
     }
-    next();
   });
 }
-app.use(cookieParser());
 
 // Mount routers
 app.use('/api/users', userRoutes);

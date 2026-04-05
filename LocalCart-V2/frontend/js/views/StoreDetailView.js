@@ -97,15 +97,6 @@ export const StoreDetailView = {
           });
         });
 
-        // Adding to cart (via delegated window function in app.js)
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const productId = btn.getAttribute('data-id');
-            if (window.addToCart) {
-              window.addToCart(productId, 1);
-            }
-          });
-        });
 
         // Video Call
         const videoBtn = document.getElementById('start-video-call');
