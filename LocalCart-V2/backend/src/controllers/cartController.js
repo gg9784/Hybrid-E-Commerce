@@ -7,16 +7,16 @@ import catchAsync from '../utils/catchAsync.js';
 // @access  Private (JWT protected)
 const getCart = catchAsync(async (req, res) => {
   const user = await User.findById(req.user._id).populate('cart.product');
-  
+
   // Filter out items where product no longer exists
   const validCart = user.cart.filter(item => item.product !== null);
-  
+
   // If we filtered anything, save the cleaned up cart
   if (validCart.length !== user.cart.length) {
     user.cart = validCart;
     await user.save();
   }
-  
+
   res.json(validCart);
 });
 
@@ -25,7 +25,7 @@ const getCart = catchAsync(async (req, res) => {
 // @access  Private
 const addToCart = catchAsync(async (req, res) => {
   const { productId, quantity } = req.body;
-  
+
   if (!productId) {
     res.status(400);
     throw new Error('Product ID is required');
@@ -56,12 +56,11 @@ const addToCart = catchAsync(async (req, res) => {
 
   await user.save();
   const populatedUser = await user.populate('cart.product');
-  
+
   // Return cleaned cart
   const finalCart = populatedUser.cart.filter(item => item.product !== null);
   res.status(200).json(finalCart);
 });
-
 
 // @desc    Update cart item quantity
 // @route   PUT /api/cart/:productId
@@ -105,6 +104,7 @@ const removeFromCart = catchAsync(async (req, res) => {
   res.json(finalCart);
 });
 
+
 // @desc    Clear entire cart
 // @route   DELETE /api/cart
 // @access  Private
@@ -114,6 +114,7 @@ const clearCart = catchAsync(async (req, res) => {
   await user.save();
   res.json([]);
 });
+
 
 export {
   getCart,
