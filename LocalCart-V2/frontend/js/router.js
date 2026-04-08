@@ -10,7 +10,7 @@ class Router {
     window.addEventListener('hashchange', () => this.handleRoute());
     window.addEventListener('load', () => this.handleRoute());
   }
-
+   
   addRoute(path, view) {
     this.routes[path] = view;
   }

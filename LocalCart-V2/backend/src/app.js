@@ -44,6 +44,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+
 // Mount routers
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
