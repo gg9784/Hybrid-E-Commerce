@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalCart - Online Shopping with 3D Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/auth-styles.css">
+  <link rel="stylesheet" href="css/hybrid-styles.css">
+  <link rel="stylesheet" href="css/chatbot-styles.css">
+  <link rel="stylesheet" href="css/3d-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Jitsi Meet API script -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+</head>
+
+<body>
+  <style>
+    /* Odoo style navbar overrides */
+    header {
+      background-color: #ffffff;
+      border-top: 4px solid #714B67;
+      /* The dark top strip from Odoo */
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 !important;
+      /* Override current header padding */
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Logo styling to mimic Odoo logo vibes (purple + grey) */
+    header .logo h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      color: #714B67;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header .logo h1 span {
+      color: #4A5568;
+    }
+
+    header nav {
+      flex-grow: 1;
+      /* Push the middle links towards the right a bit, or keep centered by using justify-content space-between and margin */
+      margin-left: 3rem;
+    }
+
+    header nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    header nav a {
+      text-decoration: none;
+      color: #4A5568;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.1s ease;
+    }
+
+    header nav a:hover,
+    header nav a.active {
+      color: #714B67;
+    }
+
+    header .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    header #nav-login-btn {
+      background: none;
+      border: none;
+      color: #4A5568;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      padding: 0;
+      box-shadow: none;
+      /* override current btn styles */
+    }
+
+    header #nav-login-btn:hover {
+      color: #714B67;
+      background: none;
+    }
+
+    header #nav-register-btn {
+      background-color: #714B67;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    header #nav-register-btn:hover {
+      background-color: #5a3c52;
+    }
+
+    header .cart-icon a {
+      color: #4A5568;
+      text-decoration: none;
+      font-size: 1.2rem;
+      position: relative;
+    }
+
+    header .cart-icon a:hover {
+      color: #714B67;
+    }
+
+    header #cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background-color: #714B67;
+      color: white;
+      border-radius: 50%;
+      padding: 1px 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+  </style>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <h1>Local<span>Cart</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#stores">Find Stores</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="auth-container">
+          <div id="unauthenticated-nav" style="display:flex; gap:1.5rem; align-items:center;">
+            <button id="nav-login-btn">Sign In</button>
+            <button id="nav-register-btn">Sign Up</button>
+          </div>
+          <div id="authenticated-nav" style="display:none; align-items:center; gap:0.5rem;">
+            <img id="nav-avatar" src="" alt="avatar"
+              style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid #714B67;">
+            <p id="nav-username" style="font-weight:600; margin:0; color: #4A5568"></p>
+            <button class="btn btn-sm btn-outline" id="nav-logout-btn"
+              style="margin-left:0.1rem; color:#000000; border-color:#000000">Logout</button>
+          </div>
+        </div>
+        <div class="cart-icon">
+          <a href="#" id="cart-button">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h2>Shop the Latest Products</h2>
+          <p>Find amazing deals on our quality products</p>
+          <a href="#products" class="btn">Shop Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+      <div class="container">
+        <h2 class="section-title">Our Products</h2>
+        <div class="filters">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="Electronics">Electronics</button>
+          <button class="filter-btn" data-category="Clothing">Clothing</button>
+          <button class="filter-btn" data-category="Home">Home</button>
+          <button class="filter-btn" data-category="Accessories">Accessories</button>
+        </div>
+        <div class="products-grid" id="products-container">
+          <!-- Products will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Store Locator Section -->
+    <section id="stores" class="stores">
+      <div class="container">
+        <h2 class="section-title">Find Local Stores</h2>
+        <div class="store-search">
+          <input type="text" id="store-search-input" placeholder="Enter location or zip code...">
+          <button id="store-search-button" class="btn">Search</button>
+        </div>
+        <div id="stores-container" class="stores-grid">
+          <!-- Stores will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="container">
+        <h2 class="section-title">About Us</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>LocalCart is your one-stop shop for all your shopping needs. We offer a wide range of products at
+              competitive prices with excellent customer service.</p>
+            <p>Our mission is to provide a seamless shopping experience with quality products delivered right to your
+              doorstep.</p>
+          </div>
+          <div class="about-features">
+            <div class="feature">
+              <i class="fas fa-truck"></i>
+              <h3>Fast Delivery</h3>
+              <p>Get your products delivered quickly</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-shield-alt"></i>
+              <h3>Secure Payments</h3>
+              <p>Your transactions are always secure</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-undo"></i>
+              <h3>Easy Returns</h3>
+              <p>Hassle-free return policy</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <div class="info-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <p>123 Shopping Street, Retail City</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-phone"></i>
+              <p>+1 (555) 123-4567</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <p>info@localcart.com</p>
+            </div>
+          </div>
+          <form class="contact-form">
+            <div class="form-group">
+              <input type="text" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <input type="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+              <textarea placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Video Chat Button and Container -->
+  <button id="video-chat-toggle" class="video-chat-toggle">
+    <i class="fas fa-video"></i>
+  </button>
+
+  <div id="video-chat-container" class="video-chat-container">
+    <div class="video-chat-header">
+      <h3>Video Chat</h3>
+      <button id="video-chat-close" class="video-chat-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="video-chat-info" class="video-chat-info">
+      No active video chat
+    </div>
+    <div id="video-chat-content" class="video-chat-content">
+      <!-- Video chat will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal">
+    <div class="modal-content auth-modal-content">
+      <div class="modal-header">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Log In</button>
+          <button class="auth-tab" data-tab="register">Sign Up</button>
+        </div>
+        <span class="close-btn" id="auth-close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form active">
+          <div class="form-group">
+            <label for="login-identifier">Email or Username</label>
+            <input type="text" id="login-identifier" required placeholder="johndoe or john@example.com">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required>
+          </div>
+          <button type="submit" class="btn btn-full" id="login-submit-btn">Log In</button>
+          <div class="auth-error" id="login-error"></div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label for="reg-fullname">Full Name</label>
+            <input type="text" id="reg-fullname" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-avatar">Profile Avatar <span style="color:red">*</span></label>
+            <input type="file" id="reg-avatar" accept="image/*" required class="file-input">
+          </div>
+          <div class="form-group">
+            <label for="reg-cover">Cover Image (Optional)</label>
+            <input type="file" id="reg-cover" accept="image/*" class="file-input">
+          </div>
+          <button type="submit" class="btn btn-full" id="register-submit-btn">Create Account</button>
+          <div class="auth-error" id="register-error"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Shopping Cart</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="cart-items">
+          <!-- Cart items will be loaded here dynamically -->
+        </div>
+        <div class="cart-summary">
+          <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total">₹0.00</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="clear-cart" class="btn btn-secondary">Clear Cart</button>
+        <button id="checkout-btn" class="btn">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Checkout</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Shipping Address</label>
+            <textarea id="address" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="card">Card Number</label>
+            <input type="text" id="card" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiry">Expiry Date</label>
+              <input type="text" id="expiry" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input type="text" id="cvv" placeholder="XXX" required>
+            </div>
+          </div>
+          <div class="order-summary">
+            <h3>Order Summary</h3>
+            <div id="order-items">
+              <!-- Order items will be loaded here dynamically -->
+            </div>
+            <div class="order-total">
+              <span>Total:</span>
+              <span id="order-total">₹0.00</span>
+            </div>
+          </div>
+          <button type="submit" class="btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Order Confirmation</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="confirmation-message">
+          <i class="fas fa-check-circle"></i>
+          <h3>Thank you for your order!</h3>
+          <p>Your order has been placed successfully.</p>
+          <p>Order ID: <span id="order-id"></span></p>
+          <p>A confirmation email has been sent to <span id="order-email"></span>.</p>
+        </div>
+        <button id="continue-shopping" class="btn">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>LocalCart</h2>
+          <p>Your one-stop shopping destination</p>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#stores">Find Stores</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-newsletter">
+          <h3>Subscribe to Our Newsletter</h3>
+          <form>
+            <input type="email" placeholder="Your Email" required>
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 LocalCart. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Socket.IO client library -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Add scripts at the end of the body -->
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/hybrid-api.js"></script>
+  <script src="js/hybrid-client.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/3d-viewer.js"></script>
+</body>
+
+</html>
